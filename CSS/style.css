@@ -1,6 +1,6 @@
 
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-        
+
         /* Add these styles to your existing style section */
 
         /* Season/Episode Selector Styles */
@@ -188,11 +188,11 @@ h2[trending] {
     .seasons-grid, .episodes-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
-    
+
     .selection-container {
         padding: 15px;
     }
-    
+
     .season-info h3, .episode-info h3 {
         font-size: 0.9rem;
     }
@@ -224,12 +224,12 @@ h2[trending] {
     .controls-container {
         padding: 1.2rem;
     }
-    
+
     .progress-container {
         height: 10px;
         margin-bottom: 15px;
     }
-    
+
     button {
         min-width: 44px;
         min-height: 44px;
@@ -407,16 +407,16 @@ h2[trending] {
     .controls-container {
         padding: 2rem;
     }
-    
+
     button {
         font-size: 1.2rem;
         padding: 15px;
     }
-    
+
     .progress-container {
         height: 12px;
     }
-    
+
     .settings-menu {
         min-width: 200px;
         font-size: 1.1rem;
@@ -428,46 +428,46 @@ h2[trending] {
             background-color: #141414;
             color: #fff;
         }
-        
+
         .hero-gradient {
             background: linear-gradient(to right, rgba(20, 20, 20, 0.9) 0%, rgba(20, 20, 20, 0.6) 100%);
         }
-        
+
         .movie-card:hover .movie-poster {
             transform: scale(1.05);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         }
-        
+
         .movie-poster {
             transition: all 0.3s ease;
         }
-        
+
         .loader {
             border-top-color: #E50914;
             animation: spinner 1.5s linear infinite;
         }
-        
+
         @keyframes spinner {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
+
         .movie-modal {
             transition: opacity 0.3s ease;
             overflow-y: auto; /* Abilita scroll solo nel modale se necessario */
 
         }
-        
+
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
-        
+
         ::-webkit-scrollbar-track {
             background: #141414;
         }
-        
+
         ::-webkit-scrollbar-thumb {
             background: #E50914;
             border-radius: 4px;
@@ -520,7 +520,7 @@ backdrop-filter: blur(12.5px);
             rgba(20, 20, 20, 0.7) 50%,
             rgba(20, 20, 20, 0.4) 100%);
     }
-    
+
     .hero-fade {
         height: 150px;
         background: linear-gradient(to bottom, 
@@ -536,22 +536,22 @@ backdrop-filter: blur(12.5px);
     .mobile-contrast {
         background-color: rgba(0, 0, 0, 0.5) !important;
     }
-    
+
     .mobile-text-contrast {
         color: #fff !important;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     }
-    
+
     #hero-section .relative.z-10 h1 {
         font-size: 2rem;
         line-height: 1.2;
     }
-    
+
     #hero-section .relative.z-10 p {
         font-size: 1rem;
         line-height: 1.4;
     }
-    
+
     #hero-rating {
         background-color: rgba(229, 9, 20, 0.9) !important;
         padding: 0.25rem 0.5rem;
@@ -570,15 +570,15 @@ backdrop-filter: blur(12.5px);
             left: 0;
             z-index: 40;
         }
-        
+
         #mobile-search-box.active {
             display: block; /* Mostrato quando attivo */
         }
-        
+
         .search-input-container {
             position: relative;
         }
-        
+
         #mobile-search-input {
             width: 100%;
             padding: 8px 40px 8px 15px;
@@ -587,7 +587,7 @@ backdrop-filter: blur(12.5px);
             background: #333;
             color: white;
         }
-        
+
         #mobile-search-button {
             position: absolute;
             right: 10px;
@@ -608,7 +608,7 @@ backdrop-filter: blur(12.5px);
             z-index: 1000;
             overflow: hidden;
         }
-        
+
         /* Contenitore header */
         #backButtonContainer {
             position: absolute;
@@ -623,13 +623,13 @@ backdrop-filter: blur(12.5px);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        
+
         /* Mostra header al passaggio del mouse o al tap */
         #videoContainer:hover #backButtonContainer,
         #videoContainer:focus-within #backButtonContainer {
             opacity: 1;
         }
-        
+
         /* Stile freccia back */
         #close-player {
             color: white;
@@ -643,7 +643,7 @@ backdrop-filter: blur(12.5px);
             justify-content: center;
             margin-right: 10px;
         }
-        
+
         /* Stile titolo */
         #player-title {
             color: white;
@@ -665,4 +665,514 @@ backdrop-filter: blur(12.5px);
 #backButtonContainer.visible {
     opacity: 1 !important;
     pointer-events: all !important;
+}
+
+.card {
+  min-width: 140px;
+  max-width: 160px;
+  flex: 0 0 auto;
+  height: auto;
+}
+.card img {
+  width: 100%;
+  border-radius: 8px;
+}
+.card h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.card p {
+  font-size: 0.85rem;
+  color: #ccc;
+  margin: 0;
+}
+
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 1rem;
+  padding: 1rem 0;
+  scroll-snap-type: x mandatory;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-btn {
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.carousel-btn:hover {
+  background: rgba(229, 9, 20, 0.8);
+}
+
+.carousel-btn.left {
+  margin-right: 0.5rem;
+}
+
+.carousel-btn.right {
+  margin-left: 0.5rem;
+}
+
+#carousel-azione {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+#carousel-azione::-webkit-scrollbar {
+  display: none;
+}
+
+.movie-card {
+  min-width: 140px;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 600px) {
+  .card {
+    min-width: 120px;
+  }
+}
+
+
+/* Commedia */
+.carousel-commedia {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.carousel-commedia::-webkit-scrollbar {
+  display: none;
+}
+
+/* Horror */
+.carousel-horror {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.carousel-horror::-webkit-scrollbar {
+  display: none;
+}
+
+/* Avventura */
+.carousel-avventura {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.carousel-avventura::-webkit-scrollbar {
+  display: none;
+}
+
+/* Dramma */
+.carousel-dramma {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.carousel-dramma::-webkit-scrollbar {
+  display: none;
+}
+
+/* Fantascienza */
+.carousel-fantascienza {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.carousel-fantascienza::-webkit-scrollbar {
+  display: none;
+}
+
+/* Romance */
+.carousel-romance {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.carousel-romance::-webkit-scrollbar {
+  display: none;
+}
+
+/* Thriller */
+.carousel-thriller {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.carousel-thriller::-webkit-scrollbar {
+  display: none;
+}
+
+/* Korean Drama */
+.carousel-korean-drama {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+.carousel-korean-drama::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.carousel-trending,
+.carousel-popular-tv,
+.carousel-top-rated,
+.carousel-upcoming {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 1rem 0;
+}
+
+.carousel-trending::-webkit-scrollbar,
+.carousel-popular-tv::-webkit-scrollbar,
+.carousel-top-rated::-webkit-scrollbar,
+.carousel-upcoming::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.movie-card {
+  min-width: 140px;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .movie-card {
+    min-width: 80px;
+    max-width: 80px;
+    height: auto;
+    border-radius: 6px;
+    flex: 0 0 auto;
+  }
+
+  .movie-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+
+  .carousel-wrapper {
+    gap: 0.4rem;
+  }
+
+  .carousel-btn {
+    font-size: 1.2rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+        }
+
+.movie-card {
+  min-width: 90px;
+  max-width: 90px;
+  flex: 0 0 auto;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+}
+
+.movie-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+}
+
+@media (max-width: 640px) {
+  .movie-card {
+    min-width: 80px;
+    max-width: 80px;
+  }
+
+  .carousel-btn {
+    font-size: 1.2rem;
+    padding: 0.25rem;
+  }
+}
+
+.carousel-korean-drama {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 1rem 2.5rem;
+}
+
+.carousel-korean-drama::-webkit-scrollbar {
+  display: none;
+}
+
+#scroll-left-korean-drama,
+#scroll-right-korean-drama {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  z-index: 2;
+  padding: 0.5rem;
+}
+
+#scroll-left-korean-drama:hover,
+#scroll-right-korean-drama:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.carousel-wrapper {
+  position: relative;
+}
+
+.carousel-korean-drama {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 1rem 2.5rem;
+}
+
+.carousel-korean-drama::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-korean-drama .movie-card {
+  flex: 0 0 auto;
+  width: 150px;
+  transition: transform 0.2s ease;
+}
+
+.carousel-korean-drama .movie-card:hover {
+  transform: scale(1.05);
+}
+
+.carousel-btn {
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: background 0.2s ease;
+}
+
+.carousel-btn:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+#scroll-left-korean-drama {
+  left: 0;
+}
+
+#scroll-right-korean-drama {
+  right: 0;
+}
+
+.badge-unavailable {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  padding: 4px 6px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+}
+
+/* pulsanti aggiungi hai preferiti */
+.fav-btn {
+  background: red;
+  color: white;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+/* 🎬 Film Coreani */
+.carousel-korean-movies {
+  display: flex;
+  flex-direction: row;         /* 👈 fondamentale per orizzontale */
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 1rem 2.5rem;
+}
+
+.carousel-korean-movies::-webkit-scrollbar {
+  display: none;
+}
+
+.movie-card {
+  flex: 0 0 auto;
+  width: 150px;
+  transition: transform 0.2s ease;
+}
+
+.movie-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.hero-section {
+  position: relative;
+  height: 70vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  color: white;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, #000, transparent);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  max-width: 600px;
+}
+
+.hero-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.hero-overview {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-buttons button {
+  background-color: #e50914;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  margin-right: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.hero-buttons button:hover {
+  background-color: #f40612;
+}
+
+
+.highlight-section {
+  position: relative;
+  height: 80vh; /* aumentato per dare più impatto */
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  color: white;
+  padding-bottom: 3rem;
+}
+
+.highlight-content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  max-width: 700px;
+}
+
+.highlight-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.highlight-overview {
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+  color: #ddd;
+}
+
+.highlight-buttons button {
+  background-color: #e50914;
+  border: none;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  margin-right: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.highlight-buttons button:hover {
+  background-color: #f40612;
 }
