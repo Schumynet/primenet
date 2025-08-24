@@ -56,7 +56,7 @@ toggleNextEpisodeButton() {
         this.content.episode_number) {
         // Verifica se esiste un episodio successivo
         const hasNextEpisode = this.checkNextEpisodeExists();
-        
+
         // Mostra/nascondi con animazione
         if (hasNextEpisode) {
             this.nextEpisodeBtn.style.display = 'flex';
@@ -77,24 +77,24 @@ toggleNextEpisodeButton() {
         if (!this.content.tv_data || !this.content.tv_data.seasons) {
             return false;
         }
-        
+
         const currentSeason = this.content.tv_data.seasons.find(
             s => s.season_number === this.content.season_number
         );
-        
+
         if (!currentSeason) return false;
-        
+
         // Controlla se c'è un episodio successivo nella stagione
         if (this.content.episode_number < currentSeason.episode_count) {
             return true;
         }
-        
+
         // Controlla se c'è una stagione successiva
         const nextSeasonNumber = this.content.season_number + 1;
         const hasNextSeason = this.content.tv_data.seasons.some(
             s => s.season_number === nextSeasonNumber
         );
-        
+
         return hasNextSeason;
     }
 
@@ -102,43 +102,43 @@ toggleNextEpisodeButton() {
 async playNextEpisode() {
     // Salva lo stato del fullscreen
     const wasFullscreen = !!document.fullscreenElement;
-    
+
     if (!this.content.tv_data) return;
-    
+
     let nextSeason = this.content.season_number;
     let nextEpisode = this.content.episode_number + 1;
-    
+
     // Verifica se siamo all'ultimo episodio della stagione
     const currentSeason = this.content.tv_data.seasons.find(
         s => s.season_number === this.content.season_number
     );
-    
+
     if (nextEpisode > currentSeason.episode_count) {
         // Passa alla stagione successiva, episodio 1
         nextSeason++;
         nextEpisode = 1;
-        
+
         // Verifica se esiste la stagione successiva
         const hasNextSeason = this.content.tv_data.seasons.some(
             s => s.season_number === nextSeason
         );
-        
+
         if (!hasNextSeason) {
             // Nessun altro episodio disponibile
             return;
         }
     }
-    
+
     // NON chiudiamo il player completamente, ma solo la riproduzione corrente
     if (this.hls) {
         this.hls.destroy();
         this.hls = null;
     }
-    
+
     this.videoPlayer.pause();
     this.videoPlayer.removeAttribute('src');
     this.videoPlayer.load();
-    
+
     // Crea il nuovo contenuto per il prossimo episodio
     const nextContent = {
         ...this.content,
@@ -146,15 +146,15 @@ async playNextEpisode() {
         episode_number: nextEpisode,
         episode_data: null // Sarà caricato quando necessario
     };
-    
+
     // Aggiorna il contenuto senza chiudere il modal
     this.content = nextContent;
     this.updatePlayerTitle();
     this.toggleNextEpisodeButton();
-    
+
     // Inizializza il nuovo player mantenendo il fullscreen
     await this.initPlayer();
-    
+
     // Se era in fullscreen, non serve rientrare perché non siamo mai usciti
     // Il container è lo stesso e mantiene lo stato
 }
@@ -170,7 +170,7 @@ async playNextEpisode() {
 
     updatePlayerTitle() {
     let playerTitle = this.content.title || this.content.name || 'Senza Titolo';
-    
+
     // Se è un episodio TV, formatta il titolo
     if (this.content.media_type === 'tv' && 
         this.content.season_number && 
@@ -179,7 +179,7 @@ async playNextEpisode() {
                            `Episodio ${this.content.episode_number}`;
         playerTitle = `${this.content.name} - S${String(this.content.season_number).padStart(2, '0')}E${String(this.content.episode_number).padStart(2, '0')}: ${episodeTitle}`;
     }
-    
+
     document.getElementById('player-title').textContent = playerTitle;
 }
 
@@ -195,18 +195,18 @@ showNextEpisodePrompt() {
             </div>
         </div>
     `;
-    
+
     document.getElementById('player-modal').appendChild(prompt);
-    
+
     document.getElementById('confirmNextEpisode').addEventListener('click', () => {
         this.playNextEpisode();
         prompt.remove();
     });
-    
+
     document.getElementById('cancelNextEpisode').addEventListener('click', () => {
         prompt.remove();
     });
-    
+
     // Nascondi automaticamente dopo 30 secondi
     setTimeout(() => {
         if (prompt.parentNode) {
@@ -219,7 +219,7 @@ showNextEpisodePrompt() {
    async initPlayer() {
     this.loadingOverlay.classList.remove('hidden');
     this.errorOverlay.classList.add('hidden');
-    
+
     // Genera un nuovo streamId e abort controller
     this.currentStreamId = this.generateStreamId();
     this.abortController = new AbortController();
@@ -230,34 +230,34 @@ showNextEpisodePrompt() {
             this.showNextEpisodePrompt();
         }
     });
-    
+
     try {
         // Costruisci l'URL del proxy con lo streamId
         let proxyUrl = `${PROXY_URL}${this.content.media_type}/${this.content.id}`;
-        
+
         if (this.content.media_type === 'tv' && 
             this.content.season_number && 
             this.content.episode_number) {
             proxyUrl = `${PROXY_URL}series/${this.content.id}/${this.content.season_number}/${this.content.episode_number}`;
         }
-        
+
         // Aggiungi lo streamId alla richiesta
         proxyUrl += `?streamId=${this.currentStreamId}`;
-        
+
         // Effettua la richiesta con l'abort controller
         const proxyResponse = await fetch(proxyUrl, {
             signal: this.abortController.signal
         });
-        
+
         if (!proxyResponse.ok) throw new Error('Failed to fetch stream URL');
-        
+
         const { url } = await proxyResponse.json();
-        
+
         if (Hls.isSupported()) {
             if (this.hls) this.hls.destroy();
-            
+
             this.hls = new Hls();
-            
+
             // Gestione errori HLS
             this.hls.on(Hls.Events.ERROR, (event, data) => {
                 if (data.fatal) {
@@ -268,15 +268,15 @@ showNextEpisodePrompt() {
                     }
                 }
             });
-            
+
             this.hls.loadSource(url);
             this.hls.attachMedia(this.videoPlayer);
-            
+
             this.hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
                 // Forza 1080p se presente
                 const lvl = this.hls.levels.findIndex(l => l.height === 1080);
                 if (lvl >= 0) this.hls.currentLevel = lvl;
-                
+
                 this.loadingOverlay.classList.add('hidden');
                 this.videoPlayer.play().catch(error => {
                     console.error('Autoplay failed:', error);
@@ -356,7 +356,7 @@ showError(message) {
     this.loadingOverlay.classList.add('hidden');
     this.errorOverlay.classList.remove('hidden');
     this.errorText.textContent = message;
-    
+
     // Resetta lo stato di riproduzione
     this.currentStreamId = null;
     if (this.abortController) {
@@ -368,19 +368,19 @@ showError(message) {
     initEventListeners() {
         // Retry button
         this.retryButton.addEventListener('click', () => this.initPlayer());
-        
+
         // Play/Pause
         this.playPauseBtn.addEventListener('click', () => this.togglePlayPause());
         this.videoPlayer.addEventListener('play', () => this.updatePlayIcon(true));
         this.videoPlayer.addEventListener('pause', () => this.updatePlayIcon(false));
-        
+
         // Volume
         this.volumeBtn.addEventListener('click', () => this.toggleMute());
         this.volumeSlider.addEventListener('input', (e) => this.updateVolume(e.target.value));
-        
+
         // Time display
         this.videoPlayer.addEventListener('timeupdate', () => this.updateTimeDisplay());
-        
+
         // Progress bar
         this.progressContainer.addEventListener('mousedown', (e) => this.startSeek(e));
         this.progressContainer.addEventListener('touchstart', (e) => this.startSeek(e));
@@ -389,41 +389,41 @@ showError(message) {
         document.addEventListener('mouseup', () => this.endSeek());
         document.addEventListener('touchend', () => this.endSeek());
 
-                
+
         this.nextEpisodeBtn.addEventListener('click', () => this.playNextEpisode());
-        
+
         // Touch controls
         this.videoPlayer.addEventListener('touchstart', (e) => this.handleTouchStart(e));
         this.videoPlayer.addEventListener('touchend', (e) => this.handleTouchEnd(e));
-        
+
         // Zoom
         this.zoomBtn.addEventListener('click', () => this.toggleZoom());
-        
+
         // Fullscreen
         this.fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
-        
+
         // Menu toggles
         this.settingsBtn.addEventListener('click', () => this.toggleMenu('settings'));
         this.audioTrackBtn.addEventListener('click', () => this.toggleMenu('audio'));
         this.captionsBtn.addEventListener('click', () => this.toggleMenu('captions'));
-        
+
         // Menu selections
         document.addEventListener('click', (e) => this.handleMenuSelection(e));
-        
+
         // Close player
         this.closePlayerBtn.addEventListener('click', () => this.closePlayer());
-        
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => this.handleKeyDown(e));
-        
+
     this.videoPlayer.addEventListener('mousemove', () => this.showControlsTemporarily());
     this.videoPlayer.addEventListener('touchmove', () => this.showControlsTemporarily());
-    
+
     // Nascondi controlli quando il video inizia a riprodurre
     this.videoPlayer.addEventListener('play', () => {
         this.showControlsTemporarily();
     });
-    
+
     // Mostra sempre i controlli quando il video è in pausa
     this.videoPlayer.addEventListener('pause', () => {
         this.controlsContainer.style.opacity = '1';
@@ -471,12 +471,12 @@ showError(message) {
         const currentSeconds = Math.floor(this.videoPlayer.currentTime % 60);
         this.currentTime.textContent = 
             `${currentMinutes}:${currentSeconds < 10 ? '0' + currentSeconds : currentSeconds}`;
-        
+
         const durationMinutes = Math.floor(this.videoPlayer.duration / 60);
         const durationSeconds = Math.floor(this.videoPlayer.duration % 60);
         this.duration.textContent = 
             `${durationMinutes}:${durationSeconds < 10 ? '0' + durationSeconds : durationSeconds}`;
-        
+
         const progressPercent = (this.videoPlayer.currentTime / this.videoPlayer.duration) * 100;
         this.progressBar.style.width = `${progressPercent}%`;
     }
@@ -489,13 +489,13 @@ startSeek(e) {
 
     handleSeek(e) {
     if (!this.isSeeking || !this.videoPlayer.duration || isNaN(this.videoPlayer.duration)) return;
-    
+
     const clientX = e.clientX || (e.touches && e.touches[0].clientX);
     if (clientX) {
         const rect = this.progressContainer.getBoundingClientRect();
         const pos = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
         const seekTime = pos * this.videoPlayer.duration;
-        
+
         if (!isNaN(seekTime) && isFinite(seekTime)) {
             this.videoPlayer.currentTime = seekTime;
         }
@@ -515,11 +515,11 @@ startSeek(e) {
         const touchEndX = e.changedTouches[0].clientX;
         const containerWidth = this.videoPlayer.offsetWidth;
         const currentTime = Date.now();
-        
+
         // Check for double tap
         if (currentTime - this.lastTapTime < 300) {
             const tapPosition = touchEndX / containerWidth;
-            
+
             if (tapPosition > 0.6) {
                 this.doSkipForward();
 
@@ -530,7 +530,7 @@ startSeek(e) {
             this.lastTapTime = 0;
             return;
         }
-        
+
         if (currentTime - this.lastTapTime >= 300) {
             const tapPosition = touchEndX / containerWidth;
             if (tapPosition > 0.4 && tapPosition < 0.6) {
@@ -541,7 +541,7 @@ startSeek(e) {
                 }
             }
         }
-        
+
         this.lastTapTime = currentTime;
     }
 
@@ -564,10 +564,10 @@ doSkipBackward() {
         this.videoPlayer.classList.remove('video-zoom-1', 'video-zoom-2', 'video-zoom-3');
         this.zoomLevel = this.zoomLevel < 3 ? this.zoomLevel + 1 : 1;
         this.videoPlayer.classList.add(`video-zoom-${this.zoomLevel}`);
-        
+
         const zoomModes = ['contain', 'cover', 'fill'];
         this.videoPlayer.style.objectFit = zoomModes[this.zoomLevel - 1];
-        
+
         const icons = [
             '<i class="fas fa-search-plus text-lg"></i>',
             '<i class="fas fa-search-minus text-lg"></i>',
@@ -596,7 +596,7 @@ doSkipBackward() {
             container.exitFullscreen();
             this.fullscreenBtn.innerHTML = '<i class="fas fa-expand text-lg"></i>';
         }
-    
+
     }
 
     toggleMenu(menuType) {
@@ -658,7 +658,7 @@ showControlsTemporarily() {
     if (this.isMobile && !this.isFullscreen() && window.innerHeight > window.innerWidth) {
         this.controlsContainer.style.opacity = '1';
         this.backButtonContainer.style.opacity = '1';
-        
+
         // Layout speciale per mobile verticale
         this.controlsContainer.classList.add('mobile-portrait');
         return;
@@ -666,19 +666,19 @@ showControlsTemporarily() {
     // Aggiungi classi
     this.controlsContainer.classList.add('visible');
     this.backButtonContainer.classList.add('visible');
-    
+
     // Rimuovi qualsiasi stile inline che potrebbe sovrascrivere
     this.controlsContainer.style.removeProperty('opacity');
     this.backButtonContainer.style.removeProperty('opacity');
-    
+
     clearTimeout(this.controlsTimeout);
-    
+
     this.controlsTimeout = setTimeout(() => {
         if (!this.videoPlayer.paused && !this.isSeeking) {
             // Rimuovi classi invece di modificare lo stile
             this.controlsContainer.classList.remove('visible');
             this.backButtonContainer.classList.remove('visible');
-            
+
             console.log('Controlli nascosti con successo'); // Debug
         }
     }, 3000);
@@ -686,7 +686,7 @@ showControlsTemporarily() {
 
     handleKeyDown(e) {
         if (document.activeElement.tagName === 'INPUT') return;
-        
+
         switch (e.key) {
             case ' ':
             case 'k':
@@ -725,7 +725,7 @@ showControlsTemporarily() {
         if (this.abortController) {
             this.abortController.abort();
         }
-        
+
         // 2. Notifica il server di interrompere il flusso
         if (this.currentStreamId) {
             try {
@@ -737,27 +737,27 @@ showControlsTemporarily() {
                 console.log('Flusso già terminato:', err);
             }
         }
-        
+
         // 3. Pulizia HLS e video
         if (this.hls) {
             this.hls.destroy();
             this.hls = null;
         }
-        
+
         this.videoPlayer.pause();
         this.videoPlayer.removeAttribute('src');
         this.videoPlayer.load();
-        
+
         // 4. Reset dello stato
         this.currentStreamId = null;
         this.abortController = null;
         this.playerModal.classList.add('hidden');
-        
+
         // 5. Uscita dal fullscreen
         if (document.fullscreenElement) {
             document.exitFullscreen();
         }
-        
+
         // 6. Sblocco orientamento
         if (screen.orientation?.unlock) {
             try {
@@ -772,7 +772,7 @@ showControlsTemporarily() {
 setupQualityOptions() {
     const container = this.settingsMenu.querySelector('.quality-options');
     if (!this.hls || !container) return;
-    
+
     container.innerHTML = `
         <div class="quality-option px-4 py-2 cursor-pointer flex items-center justify-between" data-quality="auto">
             <span>Auto</span>
@@ -848,18 +848,18 @@ function playMovie(content, type = null) {
             title: 'Film' // Default title
         };
     }
-    
+
     // Se content è una stringa (ID episodio), gestisci il caso TV
     if (typeof content === 'string' && content.includes('-')) {
         const [tvId, season, episode] = content.split('-');
         const episodeData = episodeMap.get(content);
-        
+
         if (!episodeData) {
             console.error('Dati episodio non trovati');
             return;
         }
 
-        
+
         content = {
             id: parseInt(tvId),
             media_type: 'tv',
@@ -888,25 +888,25 @@ function playMovie(content, type = null) {
         content.title = `${content.name} - S${String(content.season_number).padStart(2, '0')}E${String(content.episode_number).padStart(2, '0')}: ${episodeTitle}`;
     }
 
-    
+
     // Assicurati che content sia un oggetto valido
     if (!content || typeof content !== 'object') {
         console.error('Contenuto non valido per la riproduzione');
         return;
     }
-    
+
     // Normalizza il tipo di media
     content.media_type = content.media_type || type || 'movie';
-    
+
     // Se è una serie TV senza numero di stagione/episodio, mostra il selettore
     if (content.media_type === 'tv' && (!content.season_number || !content.episode_number)) {
         showTVSeasons(content.id, 'tv');
         return;
     }
-    
+
     // Avvia la riproduzione con l'istanza del player
     videoPlayerInstance.play(content);
-    
+
     // Se è una serie TV, salva le info per tornare alla selezione episodi
     if (content.media_type === 'tv') {
         window.lastPlayedTV = {
@@ -914,7 +914,7 @@ function playMovie(content, type = null) {
             season: content.season_number
         };
     }
-    
+
     // Gestione fullscreen e orientamento
     const container = document.getElementById('videoContainer');
     if (container.requestFullscreen) {
@@ -929,3 +929,10 @@ function playMovie(content, type = null) {
         container.webkitRequestFullscreen();
     }
 }
+
+document.querySelector('.scroll-btn.left').addEventListener('click', function() {
+  document.getElementById('genres-list').scrollBy({ left: -150, behavior: 'smooth' });
+});
+document.querySelector('.scroll-btn.right').addEventListener('click', function() {
+  document.getElementById('genres-list').scrollBy({ left: 150, behavior: 'smooth' });
+});
